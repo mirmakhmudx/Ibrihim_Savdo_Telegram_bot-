@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ibrohim Savdo — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0f1a;
+            --bg2: #111827;
+            --bg3: #1a2235;
+            --bg4: #1e2940;
+            --border: rgba(255,255,255,.07);
+            --border2: rgba(255,255,255,.12);
+            --text: #f0f4ff;
+            --text2: #8b95b0;
+            --text3: #4a5470;
+            --green: #10d97e;
+            --green-d: #0aa862;
+            --green-bg: rgba(16,217,126,.08);
+            --green-border: rgba(16,217,126,.2);
+            --amber: #f5a623;
+            --amber-bg: rgba(245,166,35,.08);
+            --amber-border: rgba(245,166,35,.2);
+            --red: #ff4d6d;
+            --red-bg: rgba(255,77,109,.08);
+            --red-border: rgba(255,77,109,.2);
+            --blue: #4d9fff;
+            --blue-bg: rgba(77,159,255,.08);
+            --blue-border: rgba(77,159,255,.2);
+            --purple: #b57bff;
+            --purple-bg: rgba(181,123,255,.08);
+            --sw: 240px;
+            --hh: 64px;
+            --r: 14px;
+            --r2: 10px;
+            --sh: 0 4px 24px rgba(0,0,0,.4);
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+        a { text-decoration:none; color:inherit; }
+        button { cursor:pointer; font-family:'DM Sans',sans-serif; border:none; outline:none; }
+        input, select, textarea { font-family:'DM Sans',sans-serif; outline:none; }
+        ::-webkit-scrollbar { width:6px; height:6px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:var(--bg4); border-radius:99px; }
+
+        /* ─── LAYOUT ─── */
+        .layout { display:flex; min-height:100vh; }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            width:var(--sw); background:var(--bg2); border-right:1px solid var(--border);
+            position:fixed; top:0; left:0; height:100vh; display:flex; flex-direction:column;
+            z-index:100; transition:transform .3s cubic-bezier(.4,0,.2,1);
+        }
+        .s-logo {
+            padding:20px 20px 16px; border-bottom:1px solid var(--border);
+            display:flex; align-items:center; gap:12px;
+        }
+        .s-logo-icon {
+            width:40px; height:40px; background:linear-gradient(135deg,var(--green),var(--green-d));
+            border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px;
+            box-shadow:0 0 20px rgba(16,217,126,.3); flex-shrink:0;
+        }
+        .s-logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; line-height:1.2; }
+        .s-logo-sub { font-size:10px; color:var(--green); font-weight:600; letter-spacing:.5px; text-transform:uppercase; }
+        .s-nav { flex:1; padding:12px 0; overflow-y:auto; }
+        .s-section { padding:16px 20px 6px; font-size:10px; font-weight:700; color:var(--text3); letter-spacing:1px; text-transform:uppercase; }
+        .s-item {
+            display:flex; align-items:center; gap:12px; padding:10px 16px; margin:2px 8px;
+            border-radius:var(--r2); cursor:pointer; transition:all .2s; position:relative;
+            color:var(--text2); font-size:14px; font-weight:500;
+        }
+        .s-item:hover { background:var(--bg3); color:var(--text); }
+        .s-item.on { background:var(--green-bg); color:var(--green); border:1px solid var(--green-border); }
+        .s-item-icon { font-size:18px; width:22px; text-align:center; flex-shrink:0; }
+        .s-badge {
+            margin-left:auto; background:var(--red); color:#fff; border-radius:99px;
+            font-size:10px; font-weight:700; padding:2px 7px; min-width:20px; text-align:center;
+        }
+        .s-bottom { padding:16px 20px; border-top:1px solid var(--border); }
+        .s-admin-card {
+            display:flex; align-items:center; gap:10px; padding:10px 12px;
+            background:var(--bg3); border-radius:var(--r2); border:1px solid var(--border);
+        }
+        .s-av {
+            width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--green),#0ff);
+            display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800;
+            color:var(--bg); flex-shrink:0;
+        }
+        .s-av-name { font-size:13px; font-weight:600; }
+        .s-av-role { font-size:11px; color:var(--green); }
+
+        /* ─── MAIN ─── */
+        .main { margin-left:var(--sw); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+
+        /* ─── TOPBAR ─── */
+        .topbar {
+            height:var(--hh); background:var(--bg2); border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between; padding:0 28px;
+            position:sticky; top:0; z-index:50;
+        }
+        .tb-left { display:flex; align-items:center; gap:12px; }
+        .tb-menu-btn { display:none; background:transparent; color:var(--text2); font-size:20px; padding:6px; }
+        .tb-title { font-family:'Syne',sans-serif; font-weight:700; font-size:18px; }
+        .tb-right { display:flex; align-items:center; gap:10px; }
+        .tb-search {
+            display:flex; align-items:center; gap:8px; background:var(--bg3); border:1px solid var(--border);
+            border-radius:var(--r2); padding:7px 14px; width:240px; transition:all .2s;
+        }
+        .tb-search:focus-within { border-color:var(--green-border); background:var(--bg4); }
+        .tb-search input { background:transparent; border:none; color:var(--text); font-size:13px; width:100%; }
+        .tb-search input::placeholder { color:var(--text3); }
+        .tb-icon-btn {
+            width:38px; height:38px; background:var(--bg3); border:1px solid var(--border);
+            border-radius:var(--r2); display:flex; align-items:center; justify-content:center;
+            font-size:16px; color:var(--text2); transition:all .2s; position:relative;
+        }
+        .tb-icon-btn:hover { background:var(--bg4); color:var(--text); }
+        .tb-notif-dot {
+            width:8px; height:8px; background:var(--red); border-radius:50%;
+            position:absolute; top:6px; right:6px; border:2px solid var(--bg2);
+        }
+
+        /* ─── CONTENT ─── */
+        .content { flex:1; padding:28px; overflow-x:hidden; }
+        .page { display:none; }
+        .page.on { display:block; }
+
+        /* ─── STAT CARDS ─── */
+        .stat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; margin-bottom:28px; }
+        .stat-card {
+            background:var(--bg2); border:1px solid var(--border); border-radius:var(--r);
+            padding:22px; position:relative; overflow:hidden; transition:all .25s; cursor:default;
+        }
+        .stat-card:hover { transform:translateY(-2px); box-shadow:var(--sh); border-color:var(--border2); }
+        .stat-card::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:2px;
+            background:var(--card-color, var(--green));
+        }
+        .stat-glow {
+            position:absolute; top:-30px; right:-30px; width:100px; height:100px;
+            border-radius:50%; background:var(--card-color, var(--green)); opacity:.05; filter:blur(20px);
+        }
+        .stat-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px; }
+        .stat-icon {
+            width:42px; height:42px; border-radius:var(--r2); display:flex; align-items:center;
+            justify-content:center; font-size:20px; background:var(--card-bg, var(--green-bg));
+            border:1px solid var(--card-border, var(--green-border));
+        }
+        .stat-trend { font-size:11px; font-weight:600; padding:3px 8px; border-radius:99px; }
+        .stat-trend.up { background:var(--green-bg); color:var(--green); }
+        .stat-trend.down { background:var(--red-bg); color:var(--red); }
+        .stat-trend.neutral { background:var(--amber-bg); color:var(--amber); }
+        .stat-val { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; line-height:1; margin-bottom:6px; }
+        .stat-label { font-size:13px; color:var(--text2); font-weight:500; }
+        .stat-sub { font-size:11px; color:var(--text3); margin-top:4px; }
+
+        /* ─── GRID 2/3 ─── */
+        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
+        .grid-3 { display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:24px; }
+        .grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; margin-bottom:24px; }
+
+        /* ─── CARD ─── */
+        .card {
+            background:var(--bg2); border:1px solid var(--border); border-radius:var(--r);
+            overflow:hidden;
+        }
+        .card-head {
+            padding:18px 22px 14px; border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between; gap:12px;
+        }
+        .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:15px; }
+        .card-body { padding:16px 22px; }
+        .card-action {
+            font-size:12px; color:var(--green); font-weight:600; cursor:pointer; background:none; border:none;
+            padding:5px 10px; border-radius:var(--r2); transition:background .2s;
+        }
+        .card-action:hover { background:var(--green-bg); }
+
+        /* ─── CHART BAR ─── */
+        .chart-wrap { padding:16px 22px 12px; }
+        .bar-chart{display:flex;align-items:flex-end;gap:6px;height:130px;padding:8px 4px 0;border-bottom:1px solid var(--border)}
+        .bar-col{display:flex;flex-direction:column;align-items:center;gap:0;flex:1;min-width:0;height:100%;justify-content:flex-end}
+        .bar-wrap{display:flex;align-items:flex-end;width:100%;height:110px}
+        .bar{width:100%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--green),#1a4731);
+            position:relative;cursor:pointer;transition:all .5s cubic-bezier(.4,0,.2,1)}
+        .bar:hover{filter:brightness(1.2)}
+        .bar:hover { filter:brightness(1.2); }
+        .bar-tip {
+            position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
+            background:var(--bg); border:1px solid var(--border2); border-radius:6px;
+            padding:4px 8px; font-size:11px; white-space:nowrap; opacity:0; pointer-events:none;
+            transition:opacity .2s; color:var(--text); z-index:10;
+        }
+        .bar:hover .bar-tip { opacity:1; }
+        .bar-day { font-size:11px; color:var(--text3); font-weight:600; }
+        .bar-val { font-size:10px; color:var(--text2); }
+        .chart-legend { display:flex; gap:16px; padding:0 22px 16px; }
+        .cl-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text2); }
+        .cl-dot { width:8px; height:8px; border-radius:50%; }
+
+        /* ─── MINI LIST ─── */
+        .mini-list { }
+        .ml-item {
+            display:flex; align-items:center; justify-content:space-between; gap:12px;
+            padding:11px 0; border-bottom:1px solid var(--border);
+        }
+        .ml-item:last-child { border-bottom:none; }
+        .ml-left { display:flex; align-items:center; gap:10px; }
+        .ml-av { width:34px; height:34px; border-radius:10px; background:var(--bg3); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+        .ml-name { font-size:13px; font-weight:600; }
+        .ml-sub { font-size:11px; color:var(--text3); }
+        .ml-right { text-align:right; }
+        .ml-val { font-size:13px; font-weight:700; color:var(--green); }
+        .ml-date { font-size:11px; color:var(--text3); }
+
+        /* ─── BADGES ─── */
+        .bd { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:99px; font-size:11px; font-weight:700; white-space:nowrap; }
+        .bd-g { background:var(--green-bg); color:var(--green); border:1px solid var(--green-border); }
+        .bd-a { background:var(--amber-bg); color:var(--amber); border:1px solid var(--amber-border); }
+        .bd-r { background:var(--red-bg); color:var(--red); border:1px solid var(--red-border); }
+        .bd-b { background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border); }
+        .bd-pu { background:var(--purple-bg); color:var(--purple); border:1px solid rgba(181,123,255,.2); }
+        .bd-gr { background:var(--bg3); color:var(--text2); border:1px solid var(--border); }
+
+        /* ─── TABS ─── */
+        .tabs { display:flex; gap:4px; padding:4px; background:var(--bg3); border-radius:var(--r2); width:fit-content; margin-bottom:20px; }
+        .tab { padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; color:var(--text2); background:transparent; transition:all .2s; }
+        .tab.on { background:var(--bg2); color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,.3); }
+        .tab:hover:not(.on) { color:var(--text); }
+
+        /* ─── TABLE ─── */
+        .tw { overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        thead tr { border-bottom:1px solid var(--border); }
+        th { padding:12px 16px; text-align:left; font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; }
+        tbody tr { border-bottom:1px solid var(--border); transition:background .15s; }
+        tbody tr:last-child { border-bottom:none; }
+        tbody tr:hover { background:var(--bg3); }
+        td { padding:13px 16px; color:var(--text2); vertical-align:middle; }
+        td b { color:var(--text); }
+
+        /* ─── PRODUCTS ─── */
+        .pg-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px; }
+        .pg-tab { padding:6px 14px; border-radius:99px; font-size:12px; font-weight:600; background:var(--bg3); border:1px solid var(--border); color:var(--text2); transition:all .2s; }
+        .pg-tab.on, .pg-tab:hover { background:var(--green-bg); color:var(--green); border-color:var(--green-border); }
+        .prod-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; }
+        .pc { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; transition:all .25s; }
+        .pc:hover { transform:translateY(-3px); box-shadow:var(--sh); border-color:var(--border2); }
+        .pc-img { height:120px; background:var(--bg3); display:flex; align-items:center; justify-content:center; font-size:50px; position:relative; }
+        .pc-img img { width:100%; height:100%; object-fit:cover; }
+        .pc-inactive-overlay { position:absolute; inset:0; background:rgba(0,0,0,.7); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--red); }
+        .pc-body { padding:14px; }
+        .pc-cat { font-size:10px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
+        .pc-name { font-size:14px; font-weight:700; margin-bottom:10px; line-height:1.3; }
+        .pc-foot { display:flex; align-items:center; justify-content:space-between; }
+        .pc-price { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; color:var(--green); }
+        .pc-price span { font-size:10px; color:var(--text3); font-weight:400; }
+        .pc-actions { display:flex; gap:4px; }
+
+        /* ─── BUTTONS ─── */
+        .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:var(--r2); font-size:13px; font-weight:600; transition:all .2s; border:1px solid transparent; }
+        .btn-g { background:var(--green); color:var(--bg); }
+        .btn-g:hover { background:var(--green-d); }
+        .btn-gh { background:var(--green-bg); color:var(--green); border-color:var(--green-border); }
+        .btn-gh:hover { background:var(--green-d); color:#fff; border-color:var(--green-d); }
+        .btn-r { background:var(--red-bg); color:var(--red); border-color:var(--red-border); }
+        .btn-r:hover { background:var(--red); color:#fff; }
+        .btn-outline { background:transparent; color:var(--text2); border-color:var(--border); }
+        .btn-outline:hover { background:var(--bg3); color:var(--text); }
+        .btn-sm { padding:5px 12px; font-size:12px; }
+        .btn-icon { width:34px; height:34px; padding:0; display:inline-flex; align-items:center; justify-content:center; border-radius:var(--r2); }
+
+        /* ─── SEARCH BAR ─── */
+        .search-bar {
+            display:flex; align-items:center; gap:8px; background:var(--bg3); border:1px solid var(--border);
+            border-radius:var(--r2); padding:9px 16px; margin-bottom:20px; max-width:340px;
+        }
+        .search-bar:focus-within { border-color:var(--green-border); }
+        .search-bar input { background:transparent; border:none; color:var(--text); font-size:13px; width:100%; }
+        .search-bar input::placeholder { color:var(--text3); }
+
+        /* ─── PAGE TOOLBAR ─── */
+        .page-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px; flex-wrap:wrap; }
+        .page-toolbar-left { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+
+        /* ─── MODAL ─── */
+        .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(6px); z-index:200; align-items:center; justify-content:center; padding:20px; }
+        .modal-bg.on { display:flex; }
+        .modal { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r); width:100%; max-width:520px; max-height:90vh; overflow-y:auto; box-shadow:0 24px 80px rgba(0,0,0,.6); }
+        .modal-head { padding:22px 24px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+        .modal-title { font-family:'Syne',sans-serif; font-weight:800; font-size:17px; }
+        .modal-close { background:var(--bg3); border:1px solid var(--border); border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--text2); cursor:pointer; transition:all .2s; }
+        .modal-close:hover { background:var(--red-bg); color:var(--red); border-color:var(--red-border); }
+        .modal-body { padding:24px; }
+        .modal-footer { padding:16px 24px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; }
+
+        /* ─── FORM ─── */
+        .form-group { margin-bottom:18px; }
+        .form-label { display:block; font-size:12px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+        .form-control {
+            width:100%; background:var(--bg3); border:1px solid var(--border); border-radius:var(--r2);
+            padding:11px 14px; color:var(--text); font-size:14px; transition:all .2s;
+        }
+        .form-control:focus { border-color:var(--green-border); background:var(--bg4); }
+        .form-control::placeholder { color:var(--text3); }
+        select.form-control option { background:var(--bg2); }
+        textarea.form-control { resize:vertical; min-height:80px; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .img-upload {
+            border:2px dashed var(--border); border-radius:var(--r2); padding:32px;
+            text-align:center; cursor:pointer; transition:all .2s; background:var(--bg3);
+        }
+        .img-upload:hover { border-color:var(--green-border); background:var(--bg4); }
+        .img-upload input { display:none; }
+        .img-preview { width:100%; height:160px; object-fit:cover; border-radius:var(--r2); display:none; }
+
+        /* ─── STATS PAGE ─── */
+        .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+        .donut-wrap { position:relative; width:160px; height:160px; margin:0 auto; }
+        .donut-svg { transform:rotate(-90deg); }
+        .donut-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+        .donut-val { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; }
+        .donut-lbl { font-size:11px; color:var(--text3); }
+        .progress-bar { background:var(--bg3); border-radius:99px; height:6px; overflow:hidden; margin-top:6px; }
+        .progress-fill { height:100%; border-radius:99px; transition:width .8s cubic-bezier(.4,0,.2,1); }
+
+        /* ─── BROADCAST ─── */
+        .bc-card { max-width:600px; }
+        .bc-preview { background:var(--bg3); border:1px solid var(--border); border-radius:var(--r2); padding:16px; margin-top:12px; min-height:80px; }
+        .bc-preview-text { font-size:14px; color:var(--text); white-space:pre-wrap; }
+
+        /* ─── EMPTY ─── */
+        .empty-state { padding:60px 20px; text-align:center; color:var(--text3); }
+        .empty-icon { font-size:52px; margin-bottom:16px; opacity:.5; }
+        .empty-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:var(--text2); margin-bottom:6px; }
+        .empty-sub { font-size:14px; }
+
+        /* ─── TOAST ─── */
+        .toast {
+            position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(80px);
+            background:var(--bg2); border:1px solid var(--border2); color:var(--text);
+            padding:12px 22px; border-radius:var(--r2); font-size:13px; font-weight:600;
+            z-index:9999; transition:transform .35s cubic-bezier(.4,0,.2,1);
+            box-shadow:0 8px 32px rgba(0,0,0,.5); white-space:nowrap;
+        }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+        .toast.ts { border-color:var(--green-border); }
+        .toast.te { border-color:var(--red-border); }
+        .toast.ta { border-color:var(--amber-border); }
+
+        /* ─── ORDER DETAIL ─── */
+        .ord-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+        .ord-info-box { background:var(--bg3); border-radius:var(--r2); padding:14px; border:1px solid var(--border); }
+        .ord-info-label { font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+        .ord-info-val { font-size:14px; font-weight:600; }
+
+        /* ─── MOBILE ─── */
+        @media(max-width:900px) {
+            .sidebar { transform:translateX(-100%); }
+            .sidebar.open { transform:translateX(0); box-shadow:var(--sh); }
+            .main { margin-left:0; }
+            .tb-menu-btn { display:flex !important; align-items:center; justify-content:center; }
+            .grid-2, .grid-3, .grid-4 { grid-template-columns:1fr; }
+            .stat-row { grid-template-columns:1fr 1fr; }
+            .form-row { grid-template-columns:1fr; }
+            .tb-search { width:160px; }
+            .content { padding:16px; }
+            .ord-detail-grid { grid-template-columns:1fr; }
+        }
+        @media(max-width:500px) {
+            .stat-grid { grid-template-columns:1fr 1fr; }
+            .stat-val { font-size:22px; }
+            .stat-row { grid-template-columns:1fr; }
+        }
+
+        /* ─── SIDEBAR OVERLAY ─── */
+        .s-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:99; }
+        .s-overlay.on { display:block; }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+        .page.on { animation:fadeIn .25s ease; }
+        .stat-card { animation:fadeIn .3s ease both; }
+
+        /* ── Pagination ── */
+        .pg-wrap{display:flex;align-items:center;justify-content:center;gap:6px;padding:16px 0;flex-wrap:wrap}
+        .pg-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;transition:.15s}
+        .pg-btn:hover{background:var(--bg2);color:var(--text1)}
+        .pg-btn.active{background:var(--green);color:#fff;border-color:var(--green);font-weight:700}
+        .pg-btn:disabled{opacity:.4;cursor:default}
+        .pg-info{font-size:12px;color:var(--text3);padding:0 8px}
+    </style>
+</head>
+<body>
+
+<!-- Sidebar overlay -->
+<div class="s-overlay" id="sOverlay" onclick="closeSidebar()"></div>
+
+<!-- ════ LAYOUT ════ -->
+<div class="layout">
+
+    <!-- ════ SIDEBAR ════ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="s-logo">
+            <div class="s-logo-icon">🛒</div>
+            <div>
+                <div class="s-logo-text">Ibrohim Savdo</div>
+                <div class="s-logo-sub">Admin Panel</div>
+            </div>
+        </div>
+
+        <nav class="s-nav">
+            <div class="s-section">Asosiy</div>
+            <div class="s-item on" id="nav-dashboard" onclick="go('dashboard',this)">
+                <span class="s-item-icon">📊</span> Dashboard
+            </div>
+            <div class="s-item" id="nav-orders" onclick="go('orders',this)">
+                <span class="s-item-icon">📦</span> Buyurtmalar
+                <span class="s-badge" id="pendingBadge">0</span>
+            </div>
+            <div class="s-item" id="nav-products" onclick="go('products',this)">
+                <span class="s-item-icon">🛍</span> Mahsulotlar
+            </div>
+            <div class="s-item" id="nav-users" onclick="go('users',this)">
+                <span class="s-item-icon">👥</span> Foydalanuvchilar
+            </div>
+            <div class="s-section">Boshqaruv</div>
+            <div class="s-item" id="nav-stats" onclick="go('stats',this)">
+                <span class="s-item-icon">📈</span> Statistika
+            </div>
+            <div class="s-item" id="nav-broadcast" onclick="go('broadcast',this)">
+                <span class="s-item-icon">📢</span> Xabar yuborish
+            </div>
+            <div class="s-item" id="nav-settings" onclick="go('settings',this)">
+                <span class="s-item-icon">⚙️</span> Sozlamalar
+            </div>
+        </nav>
+
+        <div class="s-bottom">
+            <div class="s-admin-card">
+                <div class="s-av">A</div>
+                <div>
+                    <div class="s-av-name">Admin</div>
+                    <div class="s-av-role">● Online</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ════ MAIN ════ -->
+    <div class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="tb-left">
+                <button class="tb-menu-btn" onclick="toggleSidebar()">☰</button>
+                <div class="tb-title" id="pageH">📊 Dashboard</div>
+            </div>
+            <div class="tb-right">
+                <div class="tb-search" id="tbSearch" style="display:none">
+                    <span style="color:var(--text3);font-size:14px">🔍</span>
+                    <input type="text" placeholder="Mahsulot qidirish..." oninput="onSearch(this.value)" id="searchQ">
+                </div>
+                <button class="tb-icon-btn" onclick="go('broadcast',document.getElementById('nav-broadcast'))" title="Xabar yuborish">
+                    📢
+                </button>
+                <button class="btn btn-g btn-sm" id="addProdBtn" style="display:none" onclick="openModal()">
+                    + Qo'shish
+                </button>
+            </div>
+        </header>
+
+        <!-- ════ CONTENT ════ -->
+        <div class="content">
+
+            <!-- ═══ DASHBOARD ═══ -->
+            <div class="page on" id="p-dashboard">
+                <!-- Stat cards -->
+                <div class="stat-grid" id="dashStats"></div>
+
+                <!-- Charts row -->
+                <div class="grid-3">
+                    <!-- Weekly revenue chart -->
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title">📈 Haftalik daromad</span>
+                            <div style="display:flex;gap:5px">
+                                <button id="wbtn7" onclick="window._dashWeekDays=7;renderWeekChart(7)" style="font-size:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:7px;cursor:pointer;font-weight:700">7 kun</button>
+                                <button id="wbtn28" onclick="window._dashWeekDays=28;renderWeekChart(28)" style="font-size:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:7px;cursor:pointer">4 hafta</button>
+                            </div>
+                        </div>
+                        <div class="chart-wrap">
+                            <div class="bar-chart" id="weekChart"></div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="cl-item"><div class="cl-dot" style="background:var(--green)"></div> Daromad</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent orders mini -->
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title">⏳ Yangi buyurtmalar</span>
+                            <button class="card-action" onclick="go('orders',document.getElementById('nav-orders'))">Barchasi →</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="mini-list" id="recentO"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom row -->
+                <div class="grid-2">
+                    <!-- Top products -->
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title">🔥 Top mahsulotlar</span>
+                            <button class="card-action" onclick="go('products',document.getElementById('nav-products'))">Barchasi →</button>
+                        </div>
+                        <div class="card-body">
+                            <div id="topP"></div>
+                        </div>
+                    </div>
+
+                    <!-- Users table -->
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title">👥 So'nggi foydalanuvchilar</span>
+                            <button class="card-action" onclick="go('users',document.getElementById('nav-users'))">Barchasi →</button>
+                        </div>
+                        <div class="card-body">
+                            <div id="recentU"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ ORDERS ═══ -->
+            <div class="page" id="p-orders">
+                <div class="page-toolbar">
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+                        <div class="tabs" id="ordTabs">
+                            <button class="tab on" onclick="filterOrders('all',this)">Hammasi</button>
+                            <button class="tab" onclick="filterOrders('pending',this)">⏳ Yangi</button>
+                            <button class="tab" onclick="filterOrders('pending_payment',this)">💳 To'lov</button>
+                            <button class="tab" onclick="filterOrders('accepted',this)">🚚 Qabul</button>
+                            <button class="tab" onclick="filterOrders('delivered',this)">✅ Yetkazildi</button>
+                            <button class="tab" onclick="filterOrders('cancelled',this)">❌ Bekor</button>
+                        </div>
+                        <div class="tabs" id="ordTimeTabs" style="margin-left:auto">
+                            <button class="tab on" onclick="filterOrdersTime('all',this)">Barchasi</button>
+                            <button class="tab" onclick="filterOrdersTime('week',this)">7 kun</button>
+                            <button class="tab" onclick="filterOrdersTime('month',this)">1 oy</button>
+                            <button class="tab" onclick="filterOrdersTime('year',this)">1 yil</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="tw">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>N</th>
+                                <th>Mijoz</th>
+                                <th>Mahsulotlar</th>
+                                <th>Summa</th>
+                                <th>To'lov</th>
+                                <th>Manzil</th>
+                                <th>Holat</th>
+                                <th>To'lov rasmi</th>
+                                <th>Vaqt</th>
+                                <th>Amal</th>
+                            </tr>
+                            </thead>
+                            <tbody id="ordBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="pg-wrap" id="ordPg"></div>
+                </div>
+            </div>
+
+            <!-- ═══ PRODUCTS ═══ -->
+            <div class="page" id="p-products">
+                <div class="page-toolbar">
+                    <div class="page-toolbar-left">
+                        <div class="search-bar" style="margin-bottom:0">
+                            <span style="color:var(--text3)">🔍</span>
+                            <input type="text" placeholder="Mahsulot qidirish..." oninput="onSearch(this.value)" id="searchQ2">
+                        </div>
+                    </div>
+                    <button class="btn btn-g" onclick="openModal()">+ Yangi mahsulot</button>
+                </div>
+                <div class="pg-tabs" id="pgTabs"></div>
+                <div class="prod-grid" id="prodGrid"></div>
+                <div class="pg-wrap" id="prodPg"></div>
+            </div>
+
+            <!-- ═══ USERS ═══ -->
+            <div class="page" id="p-users">
+                <div class="card">
+                    <div class="card-head">
+                        <span class="card-title">👥 Barcha foydalanuvchilar</span>
+                        <span id="userCountBadge" class="bd bd-g"></span>
+                    </div>
+                    <div class="tw">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ism</th>
+                                <th>Username</th>
+                                <th>Telefon</th>
+                                <th>Buyurtmalar</th>
+                                <th>Sarflagan</th>
+                                <th>Qo'shilgan</th>
+                            </tr>
+                            </thead>
+                            <tbody id="usersBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="pg-wrap" id="usersPg"></div>
+                </div>
+            </div>
+
+            <!-- ═══ STATS ═══ -->
+            <div class="page" id="p-stats">
+                <!-- Big stat row -->
+                <div class="stat-grid" id="fullStats"></div>
+
+                <div class="grid-2">
+                    <!-- Monthly revenue -->
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title">📅 Oylik daromad (2026)</span>
+                        </div>
+                        <div class="card-body" id="monthlyStats"></div>
+                    </div>
+
+                    <!-- Category breakdown -->
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title">📂 Kategoriya bo'yicha buyurtmalar</span>
+                        </div>
+                        <div class="card-body" id="catStats"></div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Order status donut -->
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title">🎯 Buyurtmalar holati</span>
+                        </div>
+                        <div class="card-body" id="statusChart"></div>
+                    </div>
+
+                    <!-- Top spenders -->
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title">🏆 Top mijozlar</span>
+                        </div>
+                        <div class="card-body" id="topSpenders"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ BROADCAST ═══ -->
+            <div class="page" id="p-broadcast">
+                <div class="bc-card">
+                    <div class="card" style="max-width:600px">
+                        <div class="card-head">
+                            <span class="card-title">📢 Barcha foydalanuvchilarga xabar</span>
+                            <span class="bd bd-b" id="bcUserCount">0 ta foydalanuvchi</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="form-label">Sarlavha (title)</label>
+                                <input type="text" class="form-control" id="bcTitle" placeholder="Masalan: 🎉 Yangi mahsulotlar keldi!" oninput="previewBc()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Xabar matni</label>
+                                <textarea class="form-control" id="bcText" rows="5" placeholder="Xabar matnini kiriting..." oninput="previewBc()"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Rasm (ixtiyoriy)</label>
+                                <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">
+                                    <label class="btn btn-outline" style="cursor:pointer;font-size:13px">
+                                        📷 Rasm tanlash
+                                        <input type="file" id="bcImg" accept="image/*" style="display:none" onchange="bcImgPreview(this)">
+                                    </label>
+                                    <button class="btn btn-outline" style="font-size:13px" onclick="clearBcImg()">🗑 Rasmni o'chirish</button>
+                                </div>
+                                <div id="bcImgPrv" style="margin-top:10px;display:none">
+                                    <img id="bcImgPrvImg" style="max-height:180px;max-width:100%;border-radius:10px;border:1px solid var(--border)">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ko'rinishi (Telegram preview)</label>
+                                <div class="bc-preview">
+                                    <div id="bcImgPrvSmall" style="margin-bottom:8px;display:none">
+                                        <img id="bcPrvImg" style="max-height:120px;max-width:100%;border-radius:8px">
+                                    </div>
+                                    <div style="font-size:11px;color:var(--text3);margin-bottom:4px">📢 Ibrohim Savdo:</div>
+                                    <div style="font-weight:700;font-size:13px;margin-bottom:4px" id="bcTitlePrv">Sarlavha...</div>
+                                    <div class="bc-preview-text" id="bcPreview" style="color:var(--text3);font-style:italic">Xabar matni shu yerda ko'rinadi...</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:center">
+                                <button class="btn btn-g" onclick="sendBroadcast()">📤 Yuborish</button>
+                                <button class="btn btn-outline" onclick="clearBroadcast()">Tozalash</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── SOZLAMALAR ── -->
+        <div class="page" id="p-settings">
+            <div style="max-width:700px">
+                <div class="card">
+                    <div class="card-head"><span class="card-title">⚙️ Do'kon sozlamalari</span></div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Do'kon nomi</label>
+                                <input class="form-control" id="st_name" placeholder="Ibrohim Savdo">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Telefon</label>
+                                <input class="form-control" id="st_phone" placeholder="+998 90 000 00 00">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Manzil</label>
+                            <input class="form-control" id="st_address" placeholder="Toshkent, O'zbekiston">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Biz haqimizda (qisqa matn)</label>
+                            <textarea class="form-control" id="st_about" rows="3" placeholder="Do'kon haqida..."></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Ish vaqti</label>
+                                <input class="form-control" id="st_hours" placeholder="08:00–22:00">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Karta raqami</label>
+                                <input class="form-control" id="st_card" placeholder="8600 0000 0000 0000">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Karta egasi</label>
+                                <input class="form-control" id="st_card_owner" placeholder="Ibrohim Savdo">
+                            </div>
+                        </div>
+                        <div class="card-head" style="padding:0;border:none;margin:12px 0 8px"><span class="card-title" style="font-size:13px">🗺 Do'kon joylashuvi</span></div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Latitude</label>
+                                <input class="form-control" id="st_lat" placeholder="41.2995">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Longitude</label>
+                                <input class="form-control" id="st_lng" placeholder="69.2401">
+                            </div>
+                        </div>
+                        <button type="button" class="btn" style="background:var(--blue,#2563eb);color:#fff;margin-bottom:12px;display:flex;align-items:center;gap:8px" onclick="openMapPicker()">
+                            📍 Xaritadan belgilash
+                        </button>
+                        <div id="mapPreview" style="display:none;margin-bottom:16px;border-radius:12px;overflow:hidden;border:2px solid var(--green)">
+                            <iframe id="mapIframe" width="100%" height="220" frameborder="0" style="display:block"></iframe>
+                        </div>
+                        <button class="btn btn-g" onclick="saveSettings()">💾 Saqlash</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end content -->
+</div><!-- end main -->
+</div><!-- end layout -->
+
+<!-- ════ PRODUCT MODAL ════ -->
+<div class="modal-bg" id="prodModal">
+    <div class="modal">
+        <div class="modal-head">
+            <span class="modal-title" id="modalTitle">➕ Yangi mahsulot</span>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label">Nom *</label>
+                    <input type="text" class="form-control" id="pmName" placeholder="Mahsulot nomi">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label">Narx (so'm) *</label>
+                    <input type="number" class="form-control" id="pmPrice" placeholder="25000">
+                </div>
+            </div>
+            <br>
+            <div class="form-row">
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label">Kategoriya *</label>
+                    <select class="form-control" id="pmCat"></select>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label">Holati</label>
+                    <select class="form-control" id="pmStatus">
+                        <option value="1">✅ Faol</option>
+                        <option value="0">⛔ Faol emas</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label class="form-label">Tavsif</label>
+                <textarea class="form-control" id="pmDesc" placeholder="Mahsulot haqida..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Rasm</label>
+                <label class="img-upload" for="pmImg">
+                    <input type="file" id="pmImg" accept="image/*" onchange="prevImg(event)">
+                    <img id="imgPreview" class="img-preview">
+                    <div id="imgPh">
+                        <div style="font-size:36px;margin-bottom:8px">🖼</div>
+                        <div style="font-size:13px;color:var(--text2);font-weight:600">Rasm yuklash</div>
+                        <div style="font-size:11px;color:var(--text3);margin-top:4px">PNG, JPG — maks 5MB</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal()">Bekor qilish</button>
+            <button class="btn btn-g" onclick="saveProd()">💾 Saqlash</button>
+        </div>
+    </div>
+</div>
+
+<!-- ════ ORDER DETAIL MODAL ════ -->
+<div class="modal-bg" id="ordModal">
+    <div class="modal">
+        <div class="modal-head">
+            <span class="modal-title" id="ordModalTitle">Buyurtma detali</span>
+            <button class="modal-close" onclick="closeOrdModal()">✕</button>
+        </div>
+        <div class="modal-body" id="ordModalBody"></div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // ═══════════════════════════════════════════
+    // DATA
+    // ═══════════════════════════════════════════
+    const CATS={
+        dairy:      {e:'🥛', n:'Sut mahsulotlari'},
+        bread:      {e:'🍞', n:'Non mahsulotlari'},
+        chicken:    {e:'🍗', n:'Tovuq mahsulotlari'},
+        sausage:    {e:'🌭', n:'Kolbasa mahsulotlari'},
+        eggs:       {e:'🥚', n:'Tuxum'},
+        pasta:      {e:'🍝', n:'Makaron mahsulotlari'},
+        rice:       {e:'🍚', n:'Guruch va yormalar'},
+        flour:      {e:'🌾', n:'Un mahsulotlari'},
+        sugar:      {e:'🧁', n:'Shakar mahsulotlari'},
+        sweets:     {e:'🍫', n:'Shirinliklar'},
+        cookies:    {e:'🍪', n:'Pechenye va vafli'},
+        snacks:     {e:'🍿', n:'Snacklar / Yengil tamaddilar'},
+        drinks:     {e:'🥤', n:'Ichimliklar'},
+        water:      {e:'💧', n:'Mineral suvlar'},
+        tea:        {e:'☕', n:'Choy va qahva'},
+        vegetables: {e:'🥦', n:'Sabzavotlar'},
+        fruits:     {e:'🍎', n:'Mevalar'},
+        canned:     {e:'🥫', n:'Konserva mahsulotlari'},
+        sauces:     {e:'🫙', n:'Souslar'},
+        spices:     {e:'🧂', n:'Ziravorlar'},
+        oils:       {e:'🫒', n:"Yog' mahsulotlari"},
+        kids:       {e:'🧃', n:'Bolalar uchun mahsulotlar'},
+        hygiene:    {e:'🧼', n:'Gigiyena mahsulotlari'},
+        cleaning:   {e:'🧹', n:'Tozalash vositalari'},
+        icecream:   {e:'🍦', n:'Muzqaymoqlar'},
+        other:      {e:'🛒', n:'Boshqa mahsulotlar'},
+    };
+
+    let npid=1, products=[], USERS=[], ORDERS=[];
+    let curPage='dashboard', ordFilter='all', ordTimeFilter='all', prodCatFilter=null, editingId=null, searchVal='';
+    const PROD_PER_PAGE=20, ORD_PER_PAGE=15, USER_PER_PAGE=20;
+    let prodCurPage=1, ordCurPage=1, userCurPage=1;
+
+    function buildPg(containerId, curPg, totalPages, fnName){
+        const el=document.getElementById(containerId);
+        if(!el) return;
+        if(totalPages<=1){el.innerHTML='';return;}
+        let h='';
+        h+=`<button class="pg-btn" onclick="${fnName}(${curPg-1})" ${curPg<=1?'disabled':''}>← Oldingi</button>`;
+        let s=Math.max(1,curPg-2), e=Math.min(totalPages,curPg+2);
+        if(s>1) h+=`<button class="pg-btn" onclick="${fnName}(1)">1</button>${s>2?'<span class="pg-info">…</span>':''}`;
+        for(let i=s;i<=e;i++) h+=`<button class="pg-btn${i===curPg?' active':''}" onclick="${fnName}(${i})">${i}</button>`;
+        if(e<totalPages) h+=`${e<totalPages-1?'<span class="pg-info">…</span>':''}<button class="pg-btn" onclick="${fnName}(${totalPages})">${totalPages}</button>`;
+        h+=`<button class="pg-btn" onclick="${fnName}(${curPg+1})" ${curPg>=totalPages?'disabled':''}>Keyingi →</button>`;
+        h+=`<span class="pg-info">${curPg}/${totalPages} sahifa</span>`;
+        el.innerHTML=h;
+    }
+    function goProdPage(p){prodCurPage=p;renderProducts();}
+    function goOrdPage(p){ordCurPage=p;renderOrders();}
+    function goUserPage(p){userCurPage=p;renderUsers();}
+
+    // ═══════════════════════════════════════════
+    // API
+    // ═══════════════════════════════════════════
+    const API = window.location.origin;
+
+    function showLoading(show){
+        let el = document.getElementById('globalLoader');
+        if(!el){
+            el = document.createElement('div');
+            el.id='globalLoader';
+            el.style.cssText='position:fixed;top:0;left:0;right:0;height:3px;background:var(--green);z-index:9999;transition:opacity .3s;';
+            el.innerHTML='<div style="height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:shimmer 1s infinite"></div>';
+            document.head.insertAdjacentHTML('beforeend','<style>@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}</style>');
+            document.body.prepend(el);
+        }
+        el.style.opacity = show ? '1' : '0';
+    }
+
+    async function apiFetch(url, opts={}){
+        try {
+            showLoading(true);
+            const isFormData = opts.body instanceof FormData;
+            const headers = isFormData
+                ? {'Accept':'application/json','ngrok-skip-browser-warning':'true',...(opts.headers||{})}
+                : {'Content-Type':'application/json','Accept':'application/json','ngrok-skip-browser-warning':'true',...(opts.headers||{})};
+            const res = await fetch(API + url, {
+                ...opts,
+                headers
+            });
+            let data;
+            try { data = await res.json(); }
+            catch(je) { throw new Error('Server xatosi (JSON emas). URL: ' + url); }
+            if(!res.ok) throw new Error(data.message||data.error||('Xato '+res.status));
+            return data;
+        } catch(e) {
+            console.error('apiFetch:', url, e.message);
+            toast('❌ ' + e.message, 'te');
+            return null;
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    async function loadAll(){
+        // Har birini alohida try-catch - biri xato bo'lsa boshqasi ishlaydi
+        const [ordRes, prodRes, userRes] = await Promise.all([
+            apiFetch('/admin/orders').catch(()=>null),
+            apiFetch('/admin/products').catch(()=>null),
+            apiFetch('/admin/users').catch(()=>null),
+        ]);
+
+        if(ordRes && ordRes.orders) {
+            ORDERS = ordRes.orders.map(o=>({
+                id: o.id,
+                user: o.user_name||'Noma\'lum',
+                phone: o.user_phone||'—',
+                items: (o.items||[]).map(i=>({pid:i.id||0, qty:i.quantity, name:i.name, price:i.price, cat:i.category})),
+                total: parseFloat(o.total)||0,
+                status: o.status,
+                pay: o.payment_method==='card'?'Karta':'Naqd',
+                addr: o.address||'—',
+                rawDate: o.created_at||null,
+                date: o.created_at ? (new Date(o.created_at)).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—',
+                lat: o.location_lat,
+                lng: o.location_lng,
+                screenshot_url: o.screenshot_url,
+            }));
+        }
+
+        if(prodRes && prodRes.products) {
+            products = prodRes.products.map(p=>({
+                id: p.id,
+                name: p.title||p.name,
+                cat: p.category,
+                price: p.price,
+                desc: p.description||'',
+                image: p.image ? `/shop/products/${p.id}/image` : null,
+                active: p.is_active!==false,
+            }));
+            npid = products.length ? Math.max(...products.map(p=>p.id))+1 : 1;
+        }
+
+        if(userRes && userRes.users) {
+            USERS = userRes.users.map(u=>({
+                id: u.id,
+                name: u.name,
+                un: u.username,
+                ph: u.phone||'—',
+                orders: u.orders_count||0,
+                spent: u.total_spent||0,
+                date: u.created_at ? u.created_at.substring(0,10) : '—',
+            }));
+        }
+
+        updatePendingBadge();
+        const bcEl=document.getElementById('bcUserCount'); if(bcEl) bcEl.textContent = USERS.length + ' ta foydalanuvchi';
+        const ucEl=document.getElementById('userCountBadge'); if(ucEl) ucEl.textContent = USERS.length + ' ta';
+        buildPgTabs();
+
+        if(curPage==='dashboard') renderDashboard();
+        if(curPage==='orders') renderOrders();
+        if(curPage==='products') renderProducts();
+        if(curPage==='users') renderUsers();
+        if(curPage==='stats') renderStats();
+    }
+
+    // ═══════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════
+    function init(){
+        fillPmCat();
+        buildPgTabs();
+        renderDashboard();
+        loadAll();
+        setInterval(loadAll, 30000);
+    }
+
+    // ═══════════════════════════════════════════
+    // NAVIGATION
+    // ═══════════════════════════════════════════
+    function go(page, btn){
+        document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+        document.querySelectorAll('.s-item').forEach(i=>i.classList.remove('on'));
+        document.getElementById('p-'+page).classList.add('on');
+        if(btn) btn.classList.add('on');
+        curPage = page;
+        const titles={dashboard:'📊 Dashboard',products:'🛍 Mahsulotlar',orders:'📦 Buyurtmalar',users:'👥 Foydalanuvchilar',broadcast:'📢 Xabar yuborish',stats:'📈 Statistika',settings:'⚙️ Sozlamalar'};
+        document.getElementById('pageH').textContent = titles[page]||page;
+        document.getElementById('tbSearch').style.display = 'none';
+        document.getElementById('addProdBtn').style.display = 'none';
+        if(page==='dashboard') renderDashboard();
+        if(page==='products'){ buildPgTabs(); renderProducts(); }
+        if(page==='orders') renderOrders();
+        if(page==='users') renderUsers();
+        if(page==='stats') renderStats();
+        if(page==='settings') loadSettings();
+        closeSidebar();
+    }
+
+    // ═══════════════════════════════════════════
+    // DASHBOARD
+    // ═══════════════════════════════════════════
+    function renderDashboard(){
+        const pending = ORDERS.filter(o=>o.status==='pending'||o.status==='pending_payment').length;
+        const delivered = ORDERS.filter(o=>o.status==='delivered').length;
+        const todayRev = ORDERS.filter(o=>o.status==='delivered').reduce((s,o)=>s+o.total,0);
+
+        const cards = [
+            {ico:'💰',val:fmt(todayRev)+' so\'m',label:'Jami daromad',sub:'Yetkazilgan buyurtmalardan',trend:'+12%',up:true,col:'var(--green)',cbg:'var(--green-bg)',cborder:'var(--green-border)'},
+            {ico:'📦',val:pending,label:'Yangi buyurtmalar',sub:'Tasdiqlanishi kutilmoqda',trend:pending>0?'Kutilmoqda':'Bo\'sh',up:pending>0,neutral:pending===0,col:'var(--amber)',cbg:'var(--amber-bg)',cborder:'var(--amber-border)'},
+            {ico:'✅',val:delivered,label:'Yetkazildi',sub:'Muvaffaqiyatli yakunlangan',trend:'+'+delivered,up:true,col:'var(--green)',cbg:'var(--green-bg)',cborder:'var(--green-border)'},
+            {ico:'🛍',val:products.filter(p=>p.active).length,label:'Faol mahsulotlar',sub:Object.keys(CATS).length+' ta kategoriya',trend:'Barqaror',up:true,col:'var(--blue)',cbg:'var(--blue-bg)',cborder:'var(--blue-border)'},
+            {ico:'👥',val:USERS.length,label:'Foydalanuvchilar',sub:'Telegram orqali',trend:'+'+USERS.length,up:true,col:'var(--purple)',cbg:'var(--purple-bg)',cborder:'rgba(181,123,255,.2)'},
+            {ico:'❌',val:ORDERS.filter(o=>o.status==='cancelled').length,label:'Bekor qilingan',sub:'Umumiy bekor',trend:'',up:false,col:'var(--red)',cbg:'var(--red-bg)',cborder:'var(--red-border)'},
+        ];
+
+        document.getElementById('dashStats').innerHTML = cards.map((s,i) => `
+    <div class="stat-card" style="--card-color:${s.col};--card-bg:${s.cbg};--card-border:${s.cborder};animation-delay:${i*.07}s">
+      <div class="stat-glow"></div>
+      <div class="stat-top">
+        <div class="stat-icon">${s.ico}</div>
+        ${s.trend?`<span class="stat-trend ${s.neutral?'neutral':s.up?'up':'down'}">${s.up&&!s.neutral?'↑ ':''}${s.trend}</span>`:''}
+      </div>
+      <div class="stat-val" style="color:${s.col}">${s.val}</div>
+      <div class="stat-label">${s.label}</div>
+      <div class="stat-sub">${s.sub}</div>
+    </div>`).join('');
+
+        // Weekly bar chart — 7 kun yoki 28 kun (4 hafta)
+        // Haftalik chart — global funksiya (tugmalardan chaqiriladi)
+        window.renderWeekChart = function(days){
+            const dayNms=['Ya','Du','Se','Ch','Pa','Ju','Sh'];
+            const t = new Date(); t.setHours(23,59,59,999);
+            const vals = Array(days).fill(0);
+            const labels = [];
+            for(let i=days-1;i>=0;i--){
+                const d=new Date(); d.setDate(d.getDate()-i);
+                labels.push(days<=7 ? dayNms[d.getDay()] : (i%7===0 ? (d.getDate()+'/'+(d.getMonth()+1)) : ''));
+            }
+            ORDERS.filter(o=>o.status!=='cancelled').forEach(o=>{
+                const d=new Date(o.rawDate||o.date);
+                if(isNaN(d)) return;
+                const diff=Math.floor((t-d)/(86400000));
+                if(diff>=0 && diff<days) vals[days-1-diff]+=(parseFloat(o.total)||0);
+            });
+            const mx=Math.max(...vals,1), MH=110;
+            document.getElementById('weekChart').innerHTML = vals.map((v,i)=>`
+    <div class="bar-col" style="flex:${days>7?'0 0 calc(100%/'+days+')':'1'};min-width:0">
+      <div style="font-size:9px;color:var(--text3);height:14px;text-align:center;line-height:14px">${v>0?(v>=1000000?Math.round(v/1000000)+'M':v>=1000?Math.round(v/1000)+'K':v):'—'}</div>
+      <div class="bar-wrap"><div class="bar" style="height:${v>0?Math.max(Math.round(v/mx*MH),8):2}px;opacity:${v>0?1:.2}" title="${fmt(v)} so'm"></div></div>
+      <div style="font-size:9px;color:var(--text3);margin-top:3px;text-align:center">${labels[i]}</div>
+    </div>`).join('');
+            // Active tugma belgilash
+            ['wbtn7','wbtn28'].forEach(id=>{
+                const b=document.getElementById(id); if(b) b.style.fontWeight=id===('wbtn'+days)?'700':'400';
+            });
+        };
+        renderWeekChart(window._dashWeekDays||7);
+
+        // Recent orders
+        const pendingOrds = ORDERS.filter(o=>o.status==='pending'||o.status==='pending_payment').slice(0,5);
+        document.getElementById('recentO').innerHTML = pendingOrds.length
+            ? pendingOrds.map(o=>`
+      <div class="ml-item">
+        <div class="ml-left">
+          <div class="ml-av">#</div>
+          <div>
+            <div class="ml-name">${(() => { const idx=[...ORDERS].sort((a,b)=>a.id-b.id).findIndex(x=>x.id===o.id)+1; return idx; })()}. ${o.user}</div>
+            <div class="ml-sub">${o.phone}</div>
+          </div>
+        </div>
+        <div class="ml-right">
+          <div class="ml-val">${fmt(o.total)} so'm</div>
+          <div class="ml-date">${sb(o.status)}</div>
+        </div>
+      </div>`).join('')
+            : '<div class="empty-state" style="padding:30px"><div class="empty-icon">✅</div><div class="empty-title">Barcha buyurtmalar bajarilgan</div></div>';
+
+        // Top products
+        document.getElementById('topP').innerHTML = products.slice(0,5).map((p,i)=>`
+    <div class="ml-item">
+      <div class="ml-left">
+        <div style="font-family:Syne,sans-serif;font-weight:800;font-size:14px;color:var(--text3);min-width:22px">${i+1}</div>
+        <div class="ml-av">${CATS[p.cat].e}</div>
+        <div>
+          <div class="ml-name">${p.name}</div>
+          <div class="ml-sub">${CATS[p.cat].n}</div>
+        </div>
+      </div>
+      <div class="ml-right">
+        <div class="ml-val">${fmt(p.price)}</div>
+        <div class="ml-date">so'm</div>
+      </div>
+    </div>`).join('');
+
+        // Recent users
+        document.getElementById('recentU').innerHTML = USERS.slice(0,4).map((u,i)=>`
+    <div class="ml-item">
+      <div class="ml-left">
+        <div class="ml-av" style="background:var(--bg4);font-weight:800;font-size:14px;color:var(--green)">${u.name[0]}</div>
+        <div>
+          <div class="ml-name">${u.name}${u.un?` <span style="color:var(--text3);font-weight:400">@${u.un}</span>`:''}</div>
+          <div class="ml-sub">${u.ph}</div>
+        </div>
+      </div>
+      <div class="ml-right">
+        <div class="ml-val">${fmt(u.spent)}</div>
+        <div class="ml-date">${u.orders} ta buyurtma</div>
+      </div>
+    </div>`).join('');
+    }
+
+    // ═══════════════════════════════════════════
+    // PRODUCTS
+    // ═══════════════════════════════════════════
+    function buildPgTabs(){
+        const wrap = document.getElementById('pgTabs');
+        wrap.innerHTML = `<button class="pg-tab on" onclick="filCat(null,this)">✨ Hammasi (${products.length})</button>`
+            + Object.entries(CATS).map(([k,v])=>{
+                const c = products.filter(p=>p.cat===k).length;
+                return c ? `<button class="pg-tab" onclick="filCat('${k}',this)">${v.e} ${v.n} (${c})</button>` : '';
+            }).join('');
+        const sel = document.getElementById('pmCat');
+        if(sel){
+            sel.innerHTML = '<option value="">Tanlang...</option>';
+            Object.entries(CATS).forEach(([k,v])=>{sel.innerHTML+=`<option value="${k}">${v.e} ${v.n}</option>`;});
+        }
+    }
+    function fillPmCat(){
+        const sel = document.getElementById('pmCat');
+        sel.innerHTML = '<option value="">Tanlang...</option>';
+        Object.entries(CATS).forEach(([k,v])=>{sel.innerHTML+=`<option value="${k}">${v.e} ${v.n}</option>`;});
+    }
+    function filCat(cat,btn){
+        prodCatFilter=cat; searchVal=''; prodCurPage=1;
+        document.getElementById('searchQ2').value='';
+        document.querySelectorAll('.pg-tab').forEach(t=>t.classList.remove('on'));
+        btn.classList.add('on'); renderProducts();
+    }
+    function onSearch(v){ searchVal=v; prodCurPage=1; renderProducts(); }
+    function renderProducts(){
+        let list = products.filter(p=>!prodCatFilter||p.cat===prodCatFilter);
+        if(searchVal){ const q=searchVal.toLowerCase(); list=list.filter(p=>p.name.toLowerCase().includes(q)||CATS[p.cat].n.toLowerCase().includes(q)); }
+        const grid = document.getElementById('prodGrid');
+        if(!list.length){
+            grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><div class="empty-title">Mahsulot topilmadi</div></div>`;
+            document.getElementById('prodPg').innerHTML='';
+            return;
+        }
+        const totalPages=Math.ceil(list.length/PROD_PER_PAGE);
+        if(prodCurPage>totalPages) prodCurPage=1;
+        const pageList=list.slice((prodCurPage-1)*PROD_PER_PAGE, prodCurPage*PROD_PER_PAGE);
+        grid.innerHTML = pageList.map(p=>{
+            const c = CATS[p.cat];
+            return `<div class="pc">
+      <div class="pc-img">${p.image?`<img src="${p.image}" alt="${p.name}">`:`<span>${c.e}</span>`}
+        ${!p.active?`<div class="pc-inactive-overlay">⛔ FAOL EMAS</div>`:''}
+      </div>
+      <div class="pc-body">
+        <div class="pc-cat">${c.n}</div>
+        <div class="pc-name">${p.name}</div>
+        <div class="pc-foot">
+          <div><div class="pc-price">${fmt(p.price)}<span> so'm</span></div></div>
+          <div class="pc-actions">
+            <button class="btn btn-gh btn-sm btn-icon" onclick="editProd(${p.id})" title="Tahrirlash">✏️</button>
+            <button class="btn btn-r btn-sm btn-icon" onclick="delProd(${p.id})" title="O'chirish">🗑</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+        }).join('');
+        buildPg('prodPg', prodCurPage, Math.ceil(list.length/PROD_PER_PAGE), 'goProdPage');
+    }
+
+    function openModal(){
+        editingId=null;
+        document.getElementById('modalTitle').textContent='➕ Yangi mahsulot qo\'shish';
+        ['pmName','pmPrice','pmDesc'].forEach(id=>document.getElementById(id).value='');
+        document.getElementById('pmCat').value='';
+        document.getElementById('pmStatus').value='1';
+        document.getElementById('imgPreview').style.display='none';
+        document.getElementById('imgPh').style.display='block';
+        document.getElementById('prodModal').classList.add('on');
+    }
+    function editProd(id){
+        const p = products.find(x=>x.id===id); if(!p) return;
+        editingId=id;
+        document.getElementById('modalTitle').textContent='✏️ Mahsulotni tahrirlash';
+        document.getElementById('pmName').value=p.name;
+        document.getElementById('pmPrice').value=p.price;
+        document.getElementById('pmDesc').value=p.desc||'';
+        document.getElementById('pmCat').value=p.cat;
+        document.getElementById('pmStatus').value=p.active?'1':'0';
+        if(p.image){document.getElementById('imgPreview').src=p.image;document.getElementById('imgPreview').style.display='block';document.getElementById('imgPh').style.display='none';}
+        else{document.getElementById('imgPreview').style.display='none';document.getElementById('imgPh').style.display='block';}
+        document.getElementById('prodModal').classList.add('on');
+    }
+    function closeModal(){ document.getElementById('prodModal').classList.remove('on'); }
+    function prevImg(e){
+        const f=e.target.files[0]; if(!f) return;
+        const r=new FileReader();
+        r.onload=ev=>{document.getElementById('imgPreview').src=ev.target.result;document.getElementById('imgPreview').style.display='block';document.getElementById('imgPh').style.display='none';};
+        r.readAsDataURL(f);
+    }
+    async function saveProd(){
+        const name=document.getElementById('pmName').value.trim();
+        const price=parseInt(document.getElementById('pmPrice').value);
+        const cat=document.getElementById('pmCat').value;
+        const desc=document.getElementById('pmDesc').value.trim();
+        const active=document.getElementById('pmStatus').value==='1';
+        const imgFile=document.getElementById('pmImg').files[0];
+        if(!name||!price||!cat){toast('❌ Nom, narx va kategoriya majburiy!','te');return;}
+
+        const body = {title:name, price, category:cat, description:desc, is_active:active};
+
+        let res;
+        if(editingId){
+            res = await apiFetch(`/admin/products/${editingId}/update`, {method:'POST', body:JSON.stringify(body)});
+            if(res && imgFile) await uploadProductImage(editingId, imgFile);
+            if(res) toast('✅ Mahsulot yangilandi!','ts');
+        } else {
+            res = await apiFetch('/admin/products', {method:'POST', body:JSON.stringify(body)});
+            if(res && res.id && imgFile) await uploadProductImage(res.id, imgFile);
+            if(res) toast('✅ Yangi mahsulot qo\'shildi!','ts');
+        }
+        if(res){ closeModal(); await loadAll(); }
+    }
+    // Mahsulot rasimini admin grid da ko'rsatish uchun proxy URL
+    function prodImgUrl(id){ return `/shop/products/${id}/image`; }
+    async function delProd(id){
+        if(!confirm('Mahsulotni o\'chirishni tasdiqlaysizmi?')) return;
+        const res = await apiFetch(`/admin/products/${id}`, {method:'DELETE'});
+        if(res){ toast('🗑 Mahsulot o\'chirildi','ta'); await loadAll(); }
+    }
+
+    // ═══════════════════════════════════════════
+    // ORDERS
+    // ═══════════════════════════════════════════
+    function filterOrders(f,btn){
+        ordFilter=f;
+        document.querySelectorAll('#ordTabs .tab').forEach(t=>t.classList.remove('on'));
+        if(btn) btn.classList.add('on');
+        renderOrders();
+    }
+    function filterOrdersTime(f,btn){
+        ordTimeFilter=f;
+        document.querySelectorAll('#ordTimeTabs .tab').forEach(t=>t.classList.remove('on'));
+        if(btn) btn.classList.add('on');
+        renderOrders();
+    }
+    function renderOrders(){
+        const now=new Date();
+        let list = ORDERS.filter(o=>{
+            // Status filtri
+            if(ordFilter!=='all'){
+                if(ordFilter==='pending') {if(o.status!=='pending'&&o.status!=='pending_payment') return false;}
+                else if(o.status!==ordFilter) return false;
+            }
+            // Vaqt filtri
+            if(ordTimeFilter!=='all'){
+                const d=new Date(o.rawDate||o.date);
+                if(isNaN(d)) return false;
+                const diffD=Math.floor((now-d)/86400000);
+                if(ordTimeFilter==='week' && diffD>7) return false;
+                if(ordTimeFilter==='month' && diffD>30) return false;
+                if(ordTimeFilter==='year' && diffD>365) return false;
+            }
+            return true;
+        });
+        const body = document.getElementById('ordBody');
+        if(!list.length){
+            body.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:50px;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">📭</div>Buyurtma topilmadi</td></tr>`;
+            document.getElementById('ordPg').innerHTML='';
+            return;
+        }
+        const ordTotalPages=Math.ceil(list.length/ORD_PER_PAGE);
+        if(ordCurPage>ordTotalPages) ordCurPage=1;
+        const ordSortedByDate = [...ORDERS].sort((a,b)=>a.id-b.id);
+        const ordPageList=list.slice((ordCurPage-1)*ORD_PER_PAGE, ordCurPage*ORD_PER_PAGE);
+        body.innerHTML = ordPageList.map(o=>{
+            const seqNum = ordSortedByDate.findIndex(x=>x.id===o.id) + 1;
+            const items = o.items.map(i=>{const p=products.find(x=>x.id===i.pid);return p?`${p.name}×${i.qty}`:i.name?`${i.name}×${i.qty}`:''}).filter(Boolean).join(', ') || '—';
+            const mapHTML = o.lat
+                ? `<a href="https://maps.google.com/?q=${o.lat},${o.lng}" target="_blank" style="color:var(--green);font-weight:600;font-size:12px">🗺 Xarita</a>`
+                : (o.addr && o.addr!=='—' ? `<span style="font-size:11px;color:var(--text2)" title="${o.addr}">📍 ${o.addr.substring(0,18)}${o.addr.length>18?'...':''}</span>` : `<span style="color:var(--text3);font-size:11px">—</span>`);
+            const screenshotHTML = o.screenshot_url
+                ? `<a href="${o.screenshot_url}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;color:var(--green);font-weight:700;font-size:12px;text-decoration:none;background:var(--green-bg);border:1px solid var(--green-border);padding:4px 8px;border-radius:6px">📷 Ko'rish</a>`
+                : `<span style="color:var(--text3);font-size:11px">—</span>`;
+            return `<tr>
+      <td><b style="color:var(--green);cursor:pointer;font-family:Syne,sans-serif" onclick="showOrdDetail(${o.id})">${seqNum}</b></td>
+      <td><b>${o.user}</b><br><small style="color:var(--text3)">${o.phone}</small></td>
+      <td style="max-width:160px;font-size:12px;color:var(--text2)">${items.substring(0,60)}${items.length>60?'...':''}</td>
+      <td><b style="color:var(--green)">${fmt(o.total)}</b><br><small style="color:var(--text3)">so'm</small></td>
+      <td>${o.pay==='Karta'?`<span class="bd bd-b">💳 Karta</span>`:`<span class="bd bd-gr">💵 Naqd</span>`}</td>
+      <td>${mapHTML}</td>
+      <td>${sb(o.status)}</td>
+      <td style="text-align:center">${screenshotHTML}</td>
+      <td style="font-size:11px;color:var(--text3)">${o.date}</td>
+      <td>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          ${o.status==='pending'||o.status==='pending_payment'?`<button class="btn btn-sm" style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)" onclick="chgOrd(${o.id},'accepted')">✅ Qabul</button>`:''}
+          ${o.status==='accepted'?`<button class="btn btn-sm" style="background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)" onclick="chgOrd(${o.id},'delivered')">🚚 Yetkazildi</button>`:''}
+          ${!['delivered','cancelled'].includes(o.status)?`<button class="btn btn-r btn-sm" onclick="chgOrd(${o.id},'cancelled')">❌</button>`:''}
+        </div>
+      </td>
+    </tr>`;
+        }).join('');
+        buildPg('ordPg', ordCurPage, Math.ceil(list.length/ORD_PER_PAGE), 'goOrdPage');
+    }
+    async function chgOrd(id,status){
+        let url, body=null;
+        if(status==='accepted')   url=`/admin/orders/${id}/accept`;
+        else if(status==='delivered') url=`/admin/orders/${id}/delivered`;
+        else if(status==='cancelled') url=`/admin/orders/${id}/cancel`;
+        else url=`/admin/orders/${id}/accept`;
+
+        const res = await apiFetch(url, { method:'POST', body });
+        if(!res) return;
+        const o = ORDERS.find(x=>x.id===id);
+        if(o) o.status=status;
+        renderOrders(); updatePendingBadge();
+        const num = ordNum(id);
+        const msgs={accepted:`✅ Buyurtma ${num} qabul qilindi`,delivered:`🚚 Buyurtma ${num} yetkazildi`,cancelled:`❌ Buyurtma ${num} bekor qilindi`};
+        toast(msgs[status]||'Holat yangilandi','ts');
+        if(curPage==='dashboard') renderDashboard();
+    }
+    function showOrdDetail(id){
+        const o = ORDERS.find(x=>x.id===id); if(!o) return;
+        const items = o.items.map(i=>{const p=products.find(x=>x.id===i.pid);return p?`
+    <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <span style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">${CATS[p.cat].e}</span>${p.name} × ${i.qty}</span>
+      <b style="color:var(--green)">${fmt(p.price*i.qty)} so'm</b>
+    </div>`:''}).join('');
+        document.getElementById('ordModalTitle').textContent=`Buyurtma ${ordNum(o.id)} — ${o.user}`;
+        document.getElementById('ordModalBody').innerHTML=`
+    <div class="ord-detail-grid">
+      <div class="ord-info-box"><div class="ord-info-label">Mijoz</div><div class="ord-info-val">${o.user}</div><div style="font-size:12px;color:var(--text3);margin-top:2px">${o.phone}</div></div>
+      <div class="ord-info-box"><div class="ord-info-label">Holat</div><div class="ord-info-val" style="margin-top:4px">${sb(o.status)}</div></div>
+      <div class="ord-info-box"><div class="ord-info-label">Manzil</div><div class="ord-info-val" style="font-size:13px">${o.addr}</div>${o.lat?`<a href="https://maps.google.com/?q=${o.lat},${o.lng}" target="_blank" style="color:var(--green);font-size:12px;margin-top:4px;display:inline-block">🗺 Xaritada ko'rish</a>`:''}</div>
+      <div class="ord-info-box"><div class="ord-info-label">To'lov</div><div class="ord-info-val">${o.pay==='Karta'?'💳':'💵'} ${o.pay}</div></div>
+    </div>
+    <div style="margin-bottom:16px">
+      ${items}
+      <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;padding-top:14px;border-top:1px solid var(--border2)">
+        <span>Jami:</span><span style="color:var(--green)">${fmt(o.total)} so'm</span>
+      </div>
+    </div>
+    ${o.screenshot_url?`<div style="margin-bottom:16px;padding:14px;background:var(--green-bg);border-radius:10px;border:1px solid var(--green-border)"><div style="font-size:12px;font-weight:800;color:var(--green);margin-bottom:8px">📷 Karta to'lov skrinshotи</div><img src="${o.screenshot_url}" style="max-width:100%;max-height:200px;border-radius:8px;cursor:pointer;object-fit:contain" onclick="window.open('${o.screenshot_url}','_blank')" title="Kattalashtirish uchun bosing"></div>`:''}
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${o.status==='pending'||o.status==='pending_payment'?`<button class="btn btn-g" onclick="chgOrd(${o.id},'accepted');closeOrdModal()">✅ Qabul qilish</button>`:''}
+      ${o.status==='accepted'?`<button class="btn btn-gh" onclick="chgOrd(${o.id},'delivered');closeOrdModal()">🚚 Yetkazildi</button>`:''}
+      ${!['delivered','cancelled'].includes(o.status)?`<button class="btn btn-r" onclick="chgOrd(${o.id},'cancelled');closeOrdModal()">❌ Bekor qilish</button>`:''}
+      <button class="btn btn-outline" onclick="closeOrdModal()">Yopish</button>
+    </div>`;
+        document.getElementById('ordModal').classList.add('on');
+    }
+    function closeOrdModal(){ document.getElementById('ordModal').classList.remove('on'); }
+    function updatePendingBadge(){
+        const n = ORDERS.filter(o=>o.status==='pending'||o.status==='pending_payment').length;
+        document.getElementById('pendingBadge').textContent=n;
+        document.getElementById('pendingBadge').style.display=n?'inline':'none';
+    }
+
+    // ═══════════════════════════════════════════
+    // USERS
+    // ═══════════════════════════════════════════
+    function renderUsers(){
+        const uTotalPages=Math.ceil(USERS.length/USER_PER_PAGE);
+        if(userCurPage>uTotalPages) userCurPage=1;
+        const uList=USERS.slice((userCurPage-1)*USER_PER_PAGE, userCurPage*USER_PER_PAGE);
+        document.getElementById('usersBody').innerHTML = uList.map((u,i)=>{
+            const realIdx=(userCurPage-1)*USER_PER_PAGE+i+1;
+            return `
+    <tr>
+      <td style="color:var(--text3);font-weight:700">${realIdx}</td>
+      <td><b>${u.name}</b></td>
+      <td style="color:var(--text3)">${u.un?'@'+u.un:'—'}</td>
+      <td>${u.ph}</td>
+      <td><span class="bd bd-b">${u.orders} ta</span></td>
+      <td><b style="color:var(--green)">${fmt(u.spent)}</b> <span style="color:var(--text3)">so'm</span></td>
+      <td style="color:var(--text3);font-size:12px">${u.date}</td>
+    </tr>`;
+        }).join('');
+        buildPg('usersPg', userCurPage, Math.ceil(USERS.length/USER_PER_PAGE), 'goUserPage');
+    }
+
+    // ═══════════════════════════════════════════
+    // STATS
+    // ═══════════════════════════════════════════
+    function renderStats(){
+        const del = ORDERS.filter(o=>o.status==='delivered');
+        const rev = del.reduce((s,o)=>s+o.total,0);
+        const total = ORDERS.length;
+        const cancelled = ORDERS.filter(o=>o.status==='cancelled').length;
+        const pending = ORDERS.filter(o=>o.status==='pending'||o.status==='pending_payment').length;
+        const accepted = ORDERS.filter(o=>o.status==='accepted').length;
+
+        document.getElementById('fullStats').innerHTML=[
+            {ico:'💰',val:fmt(rev)+' so\'m',label:'Jami daromad',sub:'Yetkazilgan buyurtmalar',col:'var(--green)',cbg:'var(--green-bg)',cborder:'var(--green-border)'},
+            {ico:'📦',val:total,label:'Jami buyurtmalar',sub:'Barcha vaqt uchun',col:'var(--blue)',cbg:'var(--blue-bg)',cborder:'var(--blue-border)'},
+            {ico:'✅',val:del.length,label:'Muvaffaqiyatli',sub:'Yetkazib berilgan',col:'var(--green)',cbg:'var(--green-bg)',cborder:'var(--green-border)'},
+            {ico:'⏳',val:pending,label:'Kutilmoqda',sub:'Hozir navbatda',col:'var(--amber)',cbg:'var(--amber-bg)',cborder:'var(--amber-border)'},
+            {ico:'❌',val:cancelled,label:'Bekor qilindi',sub:'Umumiy bekor',col:'var(--red)',cbg:'var(--red-bg)',cborder:'var(--red-border)'},
+            {ico:'👥',val:USERS.length,label:'Foydalanuvchilar',sub:'Jami ro\'yxatda',col:'var(--purple)',cbg:'var(--purple-bg)',cborder:'rgba(181,123,255,.2)'},
+        ].map((s,i)=>`
+    <div class="stat-card" style="--card-color:${s.col};--card-bg:${s.cbg};--card-border:${s.cborder};animation-delay:${i*.07}s">
+      <div class="stat-glow"></div>
+      <div class="stat-top"><div class="stat-icon">${s.ico}</div></div>
+      <div class="stat-val" style="color:${s.col}">${s.val}</div>
+      <div class="stat-label">${s.label}</div>
+      <div class="stat-sub">${s.sub}</div>
+    </div>`).join('');
+
+        // Monthly chart
+        const monthNames=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+        const now = new Date();
+        // 12 oy ma'lumot
+        const allMvals = Array(12).fill(0);
+        ORDERS.filter(o=>o.status!=='cancelled').forEach(o=>{
+            const d = new Date(o.rawDate||o.date);
+            if(isNaN(d)) return;
+            const diffM = (now.getFullYear()-d.getFullYear())*12 + (now.getMonth()-d.getMonth());
+            if(diffM>=0 && diffM<12) allMvals[11-diffM] += (parseFloat(o.total)||0);
+        });
+        // show6: hozirgi oy + 5 o'tgan (index 6..11)
+        const show6 = Array(6).fill(0).map((_,i)=>{
+            const mn = new Date(now.getFullYear(), now.getMonth()-(5-i), 1);
+            return {name:monthNames[mn.getMonth()], val:allMvals[6+i]};
+        });
+        const allShow = Array(12).fill(0).map((_,i)=>{
+            const mn = new Date(now.getFullYear(), now.getMonth()-11+i, 1);
+            return {name:monthNames[mn.getMonth()], val:allMvals[i]};
+        });
+
+        // Monthly chart — global funksiya
+        window._monthData = {show6, allShow, allMvals, monthNames, now};
+        window.renderMonthlyChart = function(showAll){
+            const {show6, allShow, allMvals, monthNames, now} = window._monthData;
+            const data = showAll ? allShow : show6;
+            const mmx = Math.max(...data.map(r=>r.val), 1);
+            const curVal = allMvals[11];
+            const rows = data.slice().reverse().map((r,i)=>{
+                const isCur=(i===0);
+                const pct=Math.max(Math.round(r.val/mmx*100),1);
+                return '<div style="margin-bottom:14px">'
+                    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'
+                    +'<span style="font-size:13px;font-weight:'+(isCur?'800':'500')+';color:'+(isCur?'var(--text1)':'var(--text3)')+'">'+r.name+(isCur?' <span style="font-size:10px;color:var(--green);font-weight:700">← hozir</span>':'')+'</span>'
+                    +'<b style="font-size:13px;color:'+(r.val>0?'var(--green)':'var(--text3)')+'">'+(fmt(r.val)+' so\'m')+'</b>'
+                    +'</div>'
+                    +'<div class="progress-bar"><div class="progress-fill" style="width:'+(r.val>0?pct:1)+'%;background:'+(r.val>0?'linear-gradient(90deg,var(--green),var(--green-d))':'var(--bg3)')+'"></div></div>'
+                    +'</div>';
+            }).join('');
+            document.getElementById('monthlyStats').innerHTML =
+                '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">'
+                +'<div><div style="font-size:11px;color:var(--text3);margin-bottom:3px">Joriy oy — '+monthNames[now.getMonth()]+'</div>'
+                +'<div style="font-size:24px;font-weight:800;color:var(--green);line-height:1">'+(fmt(curVal)+' so\'m')+'</div></div>'
+                +'<button onclick="window._dashShowAllM=!window._dashShowAllM;renderMonthlyChart(window._dashShowAllM)" style="font-size:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:5px 12px;border-radius:8px;cursor:pointer;white-space:nowrap">'+(showAll?'← Kamroq':'Barchasi →')+'</button>'
+                +'</div>'+rows;
+        };
+        window._dashShowAllM = window._dashShowAllM||false;
+        renderMonthlyChart(window._dashShowAllM);
+
+        // Category stats — real from ORDERS items
+        const catMap = {};
+        ORDERS.forEach(o=>{
+            (o.items||[]).forEach(i=>{
+                const cat = i.cat||'other';
+                if(!catMap[cat]) catMap[cat]={cnt:0,rev:0};
+                catMap[cat].cnt += i.qty||1;
+                catMap[cat].rev += (i.price||0)*(i.qty||1);
+            });
+        });
+        const catOrders = Object.entries(catMap).map(([k,d])=>{
+            const v = CATS[k]||{e:'📦',n:k};
+            return {k,v,cnt:d.cnt,rev2:d.rev};
+        }).sort((a,b)=>b.cnt-a.cnt);
+        if(catOrders.length===0){
+            document.getElementById('catStats').innerHTML='<div style="color:var(--text3);text-align:center;padding:20px">Hali buyurtma yo\'q</div>';
+        } else {
+            const maxCnt = Math.max(...catOrders.map(c=>c.cnt), 1);
+            document.getElementById('catStats').innerHTML = catOrders.slice(0,8).map(({k,v,cnt,rev2})=>`
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+        <span style="font-size:13px">${v.e} ${v.n}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="bd bd-g">${cnt} ta</span>
+          <span style="font-size:12px;color:var(--text3)">${fmt(rev2)} so'm</span>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${Math.round(cnt/maxCnt*100)}%;background:linear-gradient(90deg,var(--blue),var(--purple))"></div></div>
+    </div>`).join('');
+        }
+
+        // Order status breakdown
+        const statuses=[
+            {label:'Yetkazildi',count:del.length,col:'var(--green)'},
+            {label:'Kutilmoqda',count:pending,col:'var(--amber)'},
+            {label:'Qabul qilindi',count:accepted,col:'var(--blue)'},
+            {label:'Bekor qilindi',count:cancelled,col:'var(--red)'},
+        ];
+        const totalOrd = statuses.reduce((s,x)=>s+x.count,0)||1;
+        document.getElementById('statusChart').innerHTML = statuses.map(s=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px;flex:1">
+        <div style="width:12px;height:12px;border-radius:50%;background:${s.col};flex-shrink:0"></div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-size:13px;font-weight:600">${s.label}</span>
+            <b style="font-size:13px;color:${s.col}">${s.count}</b>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:${Math.round(s.count/totalOrd*100)}%;background:${s.col}"></div>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+
+        // Top spenders
+        const sorted = [...USERS].sort((a,b)=>b.spent-a.spent).slice(0,5);
+        if(!sorted.length){document.getElementById('topSpenders').innerHTML='<div style="color:var(--text3);text-align:center;padding:20px">Hali foydalanuvchi yo\'q</div>';return;}
+        const maxSpent = sorted[0].spent||1;
+        document.getElementById('topSpenders').innerHTML = sorted.map((u,i)=>`
+    <div class="ml-item">
+      <div class="ml-left">
+        <div style="font-family:Syne,sans-serif;font-weight:800;font-size:16px;color:${i===0?'var(--amber)':i===1?'var(--text2)':'var(--text3)'};min-width:24px">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
+        <div class="ml-av" style="background:var(--bg4);font-weight:800;color:var(--green)">${u.name[0]}</div>
+        <div>
+          <div class="ml-name">${u.name}</div>
+          <div class="ml-sub">${u.orders} ta buyurtma</div>
+        </div>
+      </div>
+      <div class="ml-right">
+        <div class="ml-val">${fmt(u.spent)}</div>
+        <div class="ml-date">so'm</div>
+      </div>
+    </div>`).join('');
+    }
+
+    // ═══════════════════════════════════════════
+    // BROADCAST
+    // ═══════════════════════════════════════════
+    let bcImgFile = null;
+    function bcImgPreview(input){
+        if(!input.files[0]) return;
+        bcImgFile=input.files[0];
+        const url=URL.createObjectURL(bcImgFile);
+        document.getElementById('bcImgPrv').style.display='block';
+        document.getElementById('bcImgPrvImg').src=url;
+        document.getElementById('bcImgPrvSmall').style.display='block';
+        document.getElementById('bcPrvImg').src=url;
+    }
+    function clearBcImg(){
+        bcImgFile=null;
+        document.getElementById('bcImg').value='';
+        document.getElementById('bcImgPrv').style.display='none';
+        document.getElementById('bcImgPrvSmall').style.display='none';
+    }
+    function clearBroadcast(){
+        document.getElementById('bcText').value='';
+        if(document.getElementById('bcTitle')) document.getElementById('bcTitle').value='';
+        clearBcImg(); previewBc();
+    }
+    function previewBc(){
+        const t=document.getElementById('bcText').value.trim();
+        const ti=document.getElementById('bcTitle')?.value.trim()||'';
+        const p=document.getElementById('bcPreview');
+        const tp=document.getElementById('bcTitlePrv');
+        p.textContent=t||"Xabar matni shu yerda ko'rinadi...";
+        p.style.fontStyle=t?'normal':'italic';
+        if(tp){tp.textContent=ti||'Sarlavha...';tp.style.color=ti?'var(--text)':'var(--text3)';}
+    }
+    async function sendBroadcast(){
+        const t = document.getElementById('bcText').value.trim();
+        const ti = document.getElementById('bcTitle')?.value.trim() || '📢 Ibrohim Savdo yangiligi';
+        if(!t){toast('❌ Xabar matnini kiriting!','te');return;}
+
+        // FormData orqali yuborish (rasm bo'lsa ham bo'lmasa ham)
+        const fd = new FormData();
+        fd.append('message', t);
+        fd.append('title', ti);
+        if(bcImgFile) fd.append('image', bcImgFile);
+
+        try{
+            let res;
+            res = await apiFetch('/admin/broadcast', {method:'POST', body:fd});
+            if(res && (res.ok || res.sent>=0)){
+                const sent=res.sent||USERS.length;
+                toast(`📢 ${sent} ta foydalanuvchiga xabar yuborildi!`,'ts');
+                clearBroadcast();
+            } else {
+                toast('❌ Xato yuz berdi','te');
+            }
+        }catch(e){ toast('❌ Server bilan aloqa yo\'q','te'); }
+    }
+
+    // ═══════════════════════════════════════════
+    // SOZLAMALAR
+    // ═══════════════════════════════════════════
+    async function loadSettings(){
+        try{
+            const r = await apiFetch('/admin/settings');
+            const d = r;
+            const s = d.settings||{};
+            document.getElementById('st_name').value      = s.shop_name||'';
+            document.getElementById('st_phone').value     = s.shop_phone||'';
+            document.getElementById('st_address').value   = s.shop_address||'';
+            document.getElementById('st_about').value     = s.shop_about||'';
+            document.getElementById('st_hours').value     = s.shop_hours||'';
+            document.getElementById('st_card').value      = s.shop_card||'';
+            document.getElementById('st_card_owner').value= s.shop_card_owner||'';
+            document.getElementById('st_lat').value       = s.shop_lat||'';
+            document.getElementById('st_lng').value       = s.shop_lng||'';
+        }catch(e){ toast('❌ Sozlamalar yuklanmadi','te'); }
+    }
+    async function saveSettings(){
+        const body = {
+            shop_name:       document.getElementById('st_name').value.trim(),
+            shop_phone:      document.getElementById('st_phone').value.trim(),
+            shop_address:    document.getElementById('st_address').value.trim(),
+            shop_about:      document.getElementById('st_about').value.trim(),
+            shop_hours:      document.getElementById('st_hours').value.trim(),
+            shop_card:       document.getElementById('st_card').value.trim(),
+            shop_card_owner: document.getElementById('st_card_owner').value.trim(),
+            shop_lat:        document.getElementById('st_lat').value.trim(),
+            shop_lng:        document.getElementById('st_lng').value.trim(),
+        };
+        try {
+            const d = await apiFetch('/admin/settings', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json','Accept':'application/json'},
+                body: JSON.stringify(body)
+            });
+            if(d.ok) toast('✅ Sozlamalar saqlandi!','ts');
+            else toast('❌ Xatolik: '+(d.message||'Qayta urining'),'te');
+        } catch(e) {
+            toast('❌ Server bilan aloqa yo\'q','te');
+        }
+        return;
+    }
+
+    // ═══════════════════════════════════════════
+    // MAHSULOT RASM YUKLASH (admin panel)
+    // ═══════════════════════════════════════════
+    async function uploadProductImage(productId, file){
+        if(!file) return null;
+        const fd = new FormData();
+        fd.append('image', file);
+        try{
+            const r = await apiFetch(`/admin/products/${productId}/image`,{method:'POST',body:fd});
+            const d = await r.json();
+            return d.ok ? d.url : null;
+        }catch(e){ return null; }
+    }
+
+    // ═══════════════════════════════════════════
+    // UTILS
+    // ═══════════════════════════════════════════
+    function fmt(n){ return Math.round(n).toLocaleString('uz-UZ'); }
+    function ordNum(id){ return 'N' + String(id).padStart(5,'0'); }
+    function ordSeq(id){
+        // ORDERS da nechchi o'rinda turadi (1 dan boshlab)
+        const idx = [...ORDERS].sort((a,b)=>a.id-b.id).findIndex(o=>o.id===id);
+        return idx >= 0 ? idx + 1 : id;
+    }
+    function sb(s){
+        return({
+            pending:'<span class="bd bd-a">🆕 Yangi</span>',
+            pending_payment:'<span class="bd bd-pu">💳 To\'lov kutilmoqda</span>',
+            accepted:'<span class="bd bd-b">🚚 Qabul qilindi</span>',
+            delivered:'<span class="bd bd-g">✅ Yetkazildi</span>',
+            cancelled:'<span class="bd bd-r">❌ Bekor</span>',
+        })[s]||`<span class="bd bd-gr">${s}</span>`;
+    }
+    function toast(msg,type=''){
+        const t=document.getElementById('toast');
+        t.textContent=msg; t.className='toast'+(type?' '+type:'');
+        setTimeout(()=>t.classList.add('show'),10);
+        setTimeout(()=>t.classList.remove('show'),3200);
+    }
+    function toggleSidebar(){
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('sOverlay').classList.toggle('on');
+    }
+    function closeSidebar(){
+        if(window.innerWidth<900){
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sOverlay').classList.remove('on');
+        }
+    }
+
+    // Modal close on bg click
+    document.getElementById('prodModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+    document.getElementById('ordModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeOrdModal();});
+
+    init();
+</script>
+
+<!-- MAP PICKER MODAL -->
+<div id="mapPickerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;align-items:center;justify-content:center;padding:16px">
+    <div style="background:var(--card);border-radius:20px;width:100%;max-width:600px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)">
+        <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+            <span style="font-weight:800;font-size:16px">📍 Joylashuvni belgilang</span>
+            <button onclick="closeMapPicker()" style="background:var(--bg2);border:none;border-radius:8px;width:32px;height:32px;font-size:18px;cursor:pointer;color:var(--text)">✕</button>
+        </div>
+        <div style="padding:12px 20px;font-size:13px;color:var(--text2)">Xaritada nuqtani bosing yoki suring — koordinatalar avtomatik to'ldiriladi</div>
+        <div id="adminMapContainer" style="height:380px;width:100%"></div>
+        <div style="padding:12px 20px;display:flex;gap:10px;align-items:center;border-top:1px solid var(--border)">
+            <span id="mapCoordLabel" style="font-size:13px;color:var(--text2);flex:1">📌 Bosing...</span>
+            <button onclick="useCurrentLocation()" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--text);font-family:inherit">📱 Mening joylashuvim</button>
+            <button onclick="confirmMapPick()" style="background:var(--green);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">✅ Tasdiqlash</button>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+    let _adminMap=null, _adminMarker=null, _pickedLat=null, _pickedLng=null;
+
+    function openMapPicker(){
+        document.getElementById('mapPickerOverlay').style.display='flex';
+        setTimeout(()=>{
+            if(!_adminMap){
+                const lat = parseFloat(document.getElementById('st_lat').value)||41.2995;
+                const lng = parseFloat(document.getElementById('st_lng').value)||69.2401;
+                _adminMap = L.map('adminMapContainer').setView([lat,lng],15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+                    attribution:'© OpenStreetMap'
+                }).addTo(_adminMap);
+                _adminMap.on('click',function(e){
+                    _pickedLat=e.latlng.lat.toFixed(6);
+                    _pickedLng=e.latlng.lng.toFixed(6);
+                    if(_adminMarker) _adminMarker.setLatLng(e.latlng);
+                    else _adminMarker=L.marker(e.latlng,{draggable:true}).addTo(_adminMap);
+                    _adminMarker.on('dragend',function(ev){
+                        _pickedLat=ev.target.getLatLng().lat.toFixed(6);
+                        _pickedLng=ev.target.getLatLng().lng.toFixed(6);
+                        document.getElementById('mapCoordLabel').textContent='📌 '+_pickedLat+', '+_pickedLng;
+                    });
+                    document.getElementById('mapCoordLabel').textContent='📌 '+_pickedLat+', '+_pickedLng;
+                });
+                // Agar mavjud koordinata bo'lsa marker qo'yamiz
+                if(document.getElementById('st_lat').value){
+                    _pickedLat=lat.toFixed(6); _pickedLng=lng.toFixed(6);
+                    _adminMarker=L.marker([lat,lng],{draggable:true}).addTo(_adminMap);
+                    document.getElementById('mapCoordLabel').textContent='📌 '+_pickedLat+', '+_pickedLng;
+                }
+            } else {
+                _adminMap.invalidateSize();
+            }
+        },200);
+    }
+
+    function closeMapPicker(){
+        document.getElementById('mapPickerOverlay').style.display='none';
+    }
+
+    function useCurrentLocation(){
+        if(!navigator.geolocation){alert('Geolokatsiya mavjud emas');return;}
+        navigator.geolocation.getCurrentPosition(function(pos){
+            _pickedLat=pos.coords.latitude.toFixed(6);
+            _pickedLng=pos.coords.longitude.toFixed(6);
+            const ll=[parseFloat(_pickedLat),parseFloat(_pickedLng)];
+            _adminMap.setView(ll,16);
+            if(_adminMarker) _adminMarker.setLatLng(ll);
+            else _adminMarker=L.marker(ll,{draggable:true}).addTo(_adminMap);
+            document.getElementById('mapCoordLabel').textContent='📌 '+_pickedLat+', '+_pickedLng;
+        },function(){alert('Joylashuvga ruxsat berilmadi');});
+    }
+
+    function confirmMapPick(){
+        if(!_pickedLat){alert("Xaritada nuqta bosing!");return;}
+        document.getElementById('st_lat').value=_pickedLat;
+        document.getElementById('st_lng').value=_pickedLng;
+        // Preview
+        const src=`https://www.openstreetmap.org/export/embed.html?bbox=${(parseFloat(_pickedLng)-.005)},${(parseFloat(_pickedLat)-.005)},${(parseFloat(_pickedLng)+.005)},${(parseFloat(_pickedLat)+.005)}&layer=mapnik&marker=${_pickedLat},${_pickedLng}`;
+        document.getElementById('mapIframe').src=src;
+        document.getElementById('mapPreview').style.display='block';
+        closeMapPicker();
+        toast('📍 Joylashuv belgilandi!','ts');
+    }
+</script>
+</body>
+</html>
