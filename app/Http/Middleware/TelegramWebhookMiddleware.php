@@ -23,16 +23,9 @@ class TelegramWebhookMiddleware
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        // Faqat Telegram IP'laridan kelgan so'rovlarga ruxsat
-        // (ixtiyoriy — ishlab chiqarishda yoqishingiz mumkin)
-        // if (!$this->isTelegramIp($request->ip())) {
-        //     return response()->json(['error' => 'Forbidden'], 403);
-        // }
-
         return $next($request);
     }
 
-    // Telegram rasmiy IP oralig'ini tekshirish (ixtiyoriy)
     private function isTelegramIp(string $ip): bool
     {
         $telegramRanges = [

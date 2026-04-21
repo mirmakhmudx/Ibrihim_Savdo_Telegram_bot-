@@ -34,6 +34,7 @@ class WebhookController extends Controller
         return response()->json($result);
     }
 
+
     public function delete(): JsonResponse
     {
         $result = $this->telegram->deleteWebhook();

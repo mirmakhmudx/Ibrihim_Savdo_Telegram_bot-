@@ -24,11 +24,11 @@ class Order extends Model
         'total' => 'float',
     ];
 
-    // Buyurtma statuslari
-    const STATUS_PENDING         = 'pending';          // Yangi buyurtma (naqd)
-    const STATUS_PENDING_PAYMENT = 'pending_payment';  // To'lov kutilmoqda (karta)
-    const STATUS_DELIVERED       = 'delivered';        // Yetkazildi
-    const STATUS_CANCELLED       = 'cancelled';        // Bekor qilindi
+
+    const STATUS_PENDING         = 'pending';
+    const STATUS_PENDING_PAYMENT = 'pending_payment';
+    const STATUS_DELIVERED       = 'delivered';
+    const STATUS_CANCELLED       = 'cancelled';
 
     // To'lov usullari
     const PAYMENT_CASH = 'cash';
